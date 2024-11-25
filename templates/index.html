@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca por Placa</title>
+</head>
+<body>
+    <h1>Consulta de Veículo pela Placa</h1>
+    <form id="formBusca">
+        <input type="text" id="placa" name="placa" placeholder="Digite a placa" required>
+        <button type="submit">Buscar</button>
+    </form>
+    <p id="resultado"></p>
+
+    <script>
+        document.getElementById("formBusca").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            
+            const placa = document.getElementById("placa").value;
+            const resultado = document.getElementById("resultado");
+
+            try {
+                const response = await fetch("/buscar", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `placa=${encodeURIComponent(placa)}`,
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    resultado.textContent = `Título: ${data.title}, Descrição: ${data.description}`;
+                } else {
+                    resultado.textContent = `Erro: ${data.erro}`;
+                }
+            } catch (error) {
+                resultado.textContent = "Erro ao realizar a busca.";
+            }
+        });
+    </script>
+</body>
+</html>
